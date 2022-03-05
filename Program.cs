@@ -15,9 +15,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var connString = builder.Configuration.GetConnectionString("postgres");
+var senhaDB = builder.Configuration.GetValue<string>("DB_PASSWORD");
+
 app.MapGet("/notas/listar", async () =>
 {
-    var rep = new Repository(builder.Configuration.GetConnectionString("postgres"));
+    var rep = new Repository(connString.Replace("$$password$$", senhaDB));
     var result = await rep.ListaNotas();
     return result;
 })
@@ -25,7 +28,7 @@ app.MapGet("/notas/listar", async () =>
 
 app.MapPost("/nota/inserir", (Nota nota) =>
 {
-    var rep = new Repository(builder.Configuration.GetConnectionString("postgres"));
+    var rep = new Repository(connString.Replace("$$password$$", senhaDB));
     rep.InsereNota(nota);
     
 })
