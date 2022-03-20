@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+
+  api_notas:
+    container_name: api_notas
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+      target: prod
+    ports:
+      - "5000:5000"
+    networks:
+      - academic_network
+
+  database_notas:
+    container_name: database_notas
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/notas
+    networks:
+      - academic_network
+
+networks:
+  academic_network:    
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.40.0/24
+
+volumes:
+  db:
